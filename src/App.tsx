@@ -49,7 +49,7 @@ interface Link {
 }
 
 class NetworkVisualization {
-	private svg: d3.Selection<SVGSVGElement, unknown, null, undefined>;
+	private svg: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>;
 	private width: number = 0;
 	private height: number = 0;
 	private simulation: d3.Simulation<Node, Link> | null = null;
@@ -215,7 +215,7 @@ class NetworkVisualization {
 			.enter().append('line')
 			.attr('class', d => `link ${d.type}`)
 			.attr('stroke-width', 2)
-			.attr('stroke', d => "#FFFFFF")
+			.attr('stroke', "#FFFFFF")
 			.attr('stroke-opacity', 0.7);
 
 		const node = g.append('g')
