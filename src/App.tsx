@@ -12,7 +12,6 @@ interface Project {
 	id: string;
 	title: string;
 	year: number;
-	genre: string;
 	cast: string[];
 	director?: string;
 	castingDirector?: string;
@@ -35,7 +34,6 @@ interface Node {
 	name: string;
 	type: 'project' | 'actor' | 'director' | 'castingDirector';
 	year?: number;
-	genre?: string;
 	x?: number;
 	y?: number;
 	fx?: number | null;
@@ -130,7 +128,6 @@ class NetworkVisualization {
 					name: project.title,
 					type: 'project',
 					year: project.year,
-					genre: project.genre
 				});
 			}
 
@@ -280,7 +277,7 @@ class NetworkVisualization {
 	getNodeTooltip(d: Node): string {
 		switch (d.type) {
 			case 'project':
-				return `${d.name} (${d.year})\nGenre: ${d.genre}`;
+				return `${d.name} (${d.year})`;
 			case 'actor':
 			case 'director':
 			case 'castingDirector':
