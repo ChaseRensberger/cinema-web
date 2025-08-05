@@ -121,7 +121,7 @@ class NetworkVisualization {
 		const nodeMap = new Map<string, Node>();
 		const links: Link[] = [];
 
-		this.config.projects.forEach(project => {
+		this.config?.projects?.forEach(project => {
 			if (!nodeMap.has(project.id)) {
 				nodeMap.set(project.id, {
 					id: project.id,
@@ -131,7 +131,7 @@ class NetworkVisualization {
 				});
 			}
 
-			project.cast.forEach(actorId => {
+			project?.cast?.forEach(actorId => {
 				const actor = this.config!.actors.find(a => a.id === actorId);
 				if (actor && !nodeMap.has(actor.id)) {
 					nodeMap.set(actor.id, {
@@ -149,7 +149,7 @@ class NetworkVisualization {
 				}
 			});
 
-			if (project.director) {
+			if (project?.director) {
 				const director = this.config?.directors.find(d => d.id === project.director);
 				if (director && !nodeMap.has(director.id)) {
 					nodeMap.set(director.id, {
@@ -167,7 +167,7 @@ class NetworkVisualization {
 				}
 			}
 
-			if (project.castingDirector && this.config?.castingDirectors) {
+			if (project?.castingDirector && this.config?.castingDirectors) {
 				const castingDirector = this.config.castingDirectors.find(c => c.id === project.castingDirector);
 				if (castingDirector && !nodeMap.has(castingDirector.id)) {
 					nodeMap.set(castingDirector.id, {
