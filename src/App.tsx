@@ -11,8 +11,8 @@ const Colors = {
 interface Project {
 	id: string;
 	title: string;
-	year: number;
-	cast: string[];
+	year?: number;
+	cast?: string[];
 	director?: string;
 	castingDirector?: string;
 }
@@ -29,16 +29,19 @@ interface Config {
 	castingDirectors?: Person[];
 }
 
+type EntityType = 'project' | 'actor' | 'director' | 'castingDirector';
+
 interface Node {
 	id: string;
 	name: string;
-	type: 'project' | 'actor' | 'director' | 'castingDirector';
+	type: EntityType;
 	year?: number;
 	x?: number;
 	y?: number;
 	fx?: number | null;
 	fy?: number | null;
 }
+
 
 interface Link {
 	source: string | Node;
@@ -70,7 +73,9 @@ class NetworkVisualization {
 
 	async loadConfig(): Promise<Config> {
 		const response = await fetch(`https://${import.meta.env.VITE_CLOUDFRONT_URL}/data.json`);
-		return await response.json();
+		const responseJson = await response.json();
+		console.log(responseJson);
+		return responseJson;
 	}
 
 	setupDimensions() {
@@ -111,17 +116,18 @@ class NetworkVisualization {
 	}
 
 	async reload() {
+		console.log("attempting reload...")
 		this.config = await this.loadConfig();
 		this.render();
 	}
 
 	processData() {
-		if (!this.config) return;
+		if (!this.config || !this.config.projects || !this.config.actors || !this.config.directors || !this.config.castingDirectors) return;
 
 		const nodeMap = new Map<string, Node>();
 		const links: Link[] = [];
 
-		this.config?.projects?.forEach(project => {
+		this.config.projects.forEach(project => {
 			if (!nodeMap.has(project.id)) {
 				nodeMap.set(project.id, {
 					id: project.id,
@@ -131,7 +137,7 @@ class NetworkVisualization {
 				});
 			}
 
-			project?.cast?.forEach(actorId => {
+			project.cast?.forEach(actorId => {
 				const actor = this.config!.actors.find(a => a.id === actorId);
 				if (actor && !nodeMap.has(actor.id)) {
 					nodeMap.set(actor.id, {
@@ -149,7 +155,7 @@ class NetworkVisualization {
 				}
 			});
 
-			if (project?.director) {
+			if (project.director) {
 				const director = this.config?.directors.find(d => d.id === project.director);
 				if (director && !nodeMap.has(director.id)) {
 					nodeMap.set(director.id, {
@@ -167,8 +173,8 @@ class NetworkVisualization {
 				}
 			}
 
-			if (project?.castingDirector && this.config?.castingDirectors) {
-				const castingDirector = this.config.castingDirectors.find(c => c.id === project.castingDirector);
+			if (project.castingDirector && this.config!.castingDirectors) {
+				const castingDirector = this.config!.castingDirectors.find(c => c.id === project.castingDirector);
 				if (castingDirector && !nodeMap.has(castingDirector.id)) {
 					nodeMap.set(castingDirector.id, {
 						id: castingDirector.id,
